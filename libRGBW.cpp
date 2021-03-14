@@ -1,11 +1,11 @@
 #include "libRGBW.h"
 #include "Arduino.h"
 
-RGBW WhiteConverter::getRGBW(RGB rgb) {
+RGBW WhiteConverter::getRGBW(RGB rgb, float amplify) {
 	RGB ile_jest_bialego_w;
-	ile_jest_bialego_w.R = rgb.R / m_WhiteLED.R; //ile jednostek białego jest w aktualnym czerwonym
-	ile_jest_bialego_w.G = rgb.G / m_WhiteLED.G;
-	ile_jest_bialego_w.B = rgb.B / m_WhiteLED.B;
+	ile_jest_bialego_w.R = amplify * rgb.R / m_WhiteLED.R; //ile jednostek białego jest w aktualnym czerwonym
+	ile_jest_bialego_w.G = amplify * rgb.G / m_WhiteLED.G;
+	ile_jest_bialego_w.B = amplify * rgb.B / m_WhiteLED.B;
 
 	RGBW result;
 
@@ -14,14 +14,24 @@ RGBW WhiteConverter::getRGBW(RGB rgb) {
 		//musimy część białego zaświecić RGB
 		result.W = m_max.W;
 	}
-	result.R = rgb.R - result.W * m_WhiteLED.R;
-	result.G = rgb.G - result.W * m_WhiteLED.G;
-	result.B = rgb.B - result.W * m_WhiteLED.B;
+	result.R = amplify * rgb.R - result.W * m_WhiteLED.R;
+	result.G = amplify * rgb.G - result.W * m_WhiteLED.G;
+	result.B = amplify * rgb.B - result.W * m_WhiteLED.B;
 
 	return result;
 }
 
-float WhiteConverter::calculateMaxIntensity(RGB rgb){
+RGB WhiteConverter::getRGB(RGBW kolor) {
+//	RGB RGB_from_RGBW(RGBW kolor, float& intensywnosc) {
+	RGB result;
+	result.R = kolor.R + kolor.W * m_WhiteLED.R;
+	result.G = kolor.G + kolor.W * m_WhiteLED.G;
+	result.B = kolor.B + kolor.W * m_WhiteLED.B;
+
+	return result;
+}
+
+float WhiteConverter::calculateMaxAmplification(RGB rgb){
 	// Algorytm:
 	// 1. Sprawdzamy, co najbardziej ogranicza nasze światło w rozjaśnianiu: R, G, B czy W
 
@@ -93,13 +103,14 @@ perceptualRGB PerceptualConverter::convertFromRGB(RGB rgb) {
 	return rgbp;
 }
 
-RGB PerceptualConverter::convertToRGB(perceptualRGB rgbp) {
+RGB PerceptualConverter::convertToRGB(perceptualRGB rgbp, float amplitude) {
 	RGB rgb;
-	rgb.R = rgbp.pR*m_Neutral.R;
-	rgb.G = rgbp.pG*m_Neutral.G;
-	rgb.B = rgbp.pB*m_Neutral.B;
+	rgb.R = rgbp.pR*m_Neutral.R*amplitude;
+	rgb.G = rgbp.pG*m_Neutral.G*amplitude;
+	rgb.B = rgbp.pB*m_Neutral.B*amplitude;
 	return rgb;
 }
+
 
 perceptualRGB PerceptualConverter::Temperature2RGB(float temperature, float intensity){
     temperature = temperature / 100.;
@@ -163,25 +174,6 @@ perceptualRGB PerceptualConverter::Temperature2RGB(float temperature, float inte
 	result.pB = result.pB / cur_intensity * intensity;
     return result;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /*
 float smartRGBW::ile_razy_rozjasnic(RGB rgb, float target_natezenie) {
