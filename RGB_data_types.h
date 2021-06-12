@@ -2,6 +2,8 @@
 
 #include "Arduino.h"
 
+namespace libRGBW {
+
 struct RGB { //units that are going to be projected on the LEDS directly if there were only RGB LEDS. That's why the maximal intensity can be bigger than physically possible on a LED
     constexpr RGB(uint32_t c) : R(static_cast<uint8_t>(c >> 16)),
                                 G(static_cast<uint8_t>(c >> 8)),
@@ -67,4 +69,5 @@ perceptualRGB operator+=(perceptualRGB rgb1, perceptualRGB rgb2) {
     rgb1.pG += rgb2.pG;
     rgb1.pB += rgb2.pB;
     return rgb1;
+}
 }

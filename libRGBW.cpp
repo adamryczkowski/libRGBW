@@ -1,6 +1,9 @@
 #include "libRGBW.h"
 #include "Arduino.h"
 
+namespace libRGBW {
+
+
 RGBW WhiteConverter::getRGBW(RGB rgb, float amplify) {
 	RGB ile_jest_bialego_w;
 	ile_jest_bialego_w.R = amplify * rgb.R / m_WhiteLED.R; //ile jednostek białego jest w aktualnym czerwonym
@@ -175,6 +178,7 @@ perceptualRGB PerceptualConverter::Temperature2RGB(float temperature, float inte
     return result;
 }
 
+}
 /*
 float smartRGBW::ile_razy_rozjasnic(RGB rgb, float target_natezenie) {
 	float current_natezenie = getIntensity(rgb);
@@ -244,5 +248,4 @@ RGBW smartRGBW::ColorFromTime(float time, float intensity) {
 	float nat_scaled = nat_raw/100 * nat_max * intensity;
 	return(getRGBW(kolor, nat_scaled));
 }
-
 */
