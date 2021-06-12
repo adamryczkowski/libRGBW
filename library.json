@@ -1,6 +1,6 @@
 {
   "name": "RGBW color converter",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Displays any RGB color using RGB+W for better intensity. Can be calibrated for any white LED and definition of neutral white.",
   "keywords": "planet, happiness, people",
   "repository":
@@ -14,6 +14,10 @@
       "name": "Adam Ryczkowski",
       "email": "adam@statystyka.net",
       "maintainer": true
+    },
+    {
+      "name": "Mikołaj Krawczuk",
+      "email": "mikolaj@statystyka.net"
     }
   ],
   "license": "MIT",

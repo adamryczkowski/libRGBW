@@ -1,9 +1,5 @@
 #pragma once
 #include "RGB_data_types.h"
-
-namespace libRGBW {
-
-
 class PerceptualConverter;
 
 //Class that converts 4-dimensional RGBW into 3-dimensional normalized RGB (i.e. only hue) + intensity
@@ -52,4 +48,3 @@ private:
 	RGB m_Neutral = {255., 152., 52.}; //only color, intensity is irrelevant
 };
 
-}
