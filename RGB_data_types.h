@@ -10,6 +10,7 @@ struct RGB { //units that are going to be projected on the LEDS directly if ther
                                 B(static_cast<uint8_t>(c)) {}
 
     constexpr RGB(float r, float g, float b) : R(r), G(g), B(b) {}
+    constexpr RGB() : R(0), G(0), B(0) {}
 
     float R;
     float G;
@@ -28,6 +29,7 @@ struct RGBW { //units that are going to be projected on the LEDS directly
                                  W(static_cast<uint8_t>(c >> 24)) {}
 
     constexpr RGBW(float r, float g, float b, float w) : R(r), G(g), B(b), W(w) {}
+    constexpr RGBW() : R(0), G(0), B(0), W(0) {}
 
     float R;
     float G;
@@ -51,23 +53,10 @@ struct perceptualRGB { //Units that are scaled 0..1.0. 100% of each mean a neutr
     float pB;
 };
 
-perceptualRGB operator*(const perceptualRGB &rgb1, const float f) {
-    return perceptualRGB{rgb1.pR * f,
-                         rgb1.pG * f,
-                         rgb1.pB * f};
-}
+perceptualRGB operator*(const perceptualRGB &rgb1, const float f);
 
 
-perceptualRGB operator+(const perceptualRGB &rgb1, const perceptualRGB &rgb2) {
-    return perceptualRGB{rgb1.pR + rgb2.pR,
-                         rgb1.pG + rgb2.pG,
-                         rgb1.pB + rgb2.pB};
-}
+perceptualRGB operator+(const perceptualRGB &rgb1, const perceptualRGB &rgb2);
 
-perceptualRGB operator+=(perceptualRGB rgb1, perceptualRGB rgb2) {
-    rgb1.pR += rgb2.pR;
-    rgb1.pG += rgb2.pG;
-    rgb1.pB += rgb2.pB;
-    return rgb1;
-}
+perceptualRGB operator+=(perceptualRGB rgb1, perceptualRGB rgb2);
 }

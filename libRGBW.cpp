@@ -5,10 +5,9 @@ namespace libRGBW {
 
 
 RGBW WhiteConverter::getRGBW(RGB rgb, float amplify) {
-	RGB ile_jest_bialego_w;
-	ile_jest_bialego_w.R = amplify * rgb.R / m_WhiteLED.R; //ile jednostek białego jest w aktualnym czerwonym
-	ile_jest_bialego_w.G = amplify * rgb.G / m_WhiteLED.G;
-	ile_jest_bialego_w.B = amplify * rgb.B / m_WhiteLED.B;
+	RGB ile_jest_bialego_w(amplify * rgb.R / m_WhiteLED.R,//ile jednostek białego jest w aktualnym czerwonym
+                           amplify * rgb.G / m_WhiteLED.G,
+                           amplify * rgb.B / m_WhiteLED.B);
 
 	RGBW result;
 
@@ -26,10 +25,9 @@ RGBW WhiteConverter::getRGBW(RGB rgb, float amplify) {
 
 RGB WhiteConverter::getRGB(RGBW kolor) {
 //	RGB RGB_from_RGBW(RGBW kolor, float& intensywnosc) {
-	RGB result;
-	result.R = kolor.R + kolor.W * m_WhiteLED.R;
-	result.G = kolor.G + kolor.W * m_WhiteLED.G;
-	result.B = kolor.B + kolor.W * m_WhiteLED.B;
+	RGB result(kolor.R + kolor.W * m_WhiteLED.R,
+               kolor.G + kolor.W * m_WhiteLED.G,
+               kolor.B + kolor.W * m_WhiteLED.B);
 
 	return result;
 }
@@ -48,10 +46,9 @@ float WhiteConverter::calculateMaxAmplification(RGB rgb){
 		//Ile razy można zwiększyć intenstywność, aby uzyskać 100% białego.
 		//Nie uwzględniająmy tego, że możemy dosztukować jeszcze trochę zadanej barwy używając samych diód RGB.
 		float max_factor_white = absMax.W / rgbw.W;
-		RGB res; //ile jeszcze zostało nam mocy diód RGB (już bez W, bo W=100%) do doświecenia, aby jeszcze dodać ciut-ciut więcej światła
-		res.R = absMax.R - rgbw.R * max_factor_white;
-		res.G = absMax.G - rgbw.G * max_factor_white;
-		res.B = absMax.B - rgbw.B * max_factor_white;
+		RGB res(absMax.R - rgbw.R * max_factor_white,
+		 res.G = absMax.G - rgbw.G * max_factor_white,
+		 res.B = absMax.B - rgbw.B * max_factor_white);
 
 		//Teraz musimy policzyć, ile z tego RGB jest w kierunku naszego rgb
 		RGB tmp; //res=residuum, czyli reszta. Określa, ile światła mamy jeszcze nie wykorzystanego w diodach R, G i B.
@@ -177,6 +174,27 @@ perceptualRGB PerceptualConverter::Temperature2RGB(float temperature, float inte
 	result.pB = result.pB / cur_intensity * intensity;
     return result;
 }
+
+perceptualRGB operator*(const perceptualRGB &rgb1, const float f) {
+    return perceptualRGB{rgb1.pR * f,
+                         rgb1.pG * f,
+                         rgb1.pB * f};
+}
+
+
+perceptualRGB operator+(const perceptualRGB &rgb1, const perceptualRGB &rgb2) {
+    return perceptualRGB{rgb1.pR + rgb2.pR,
+                         rgb1.pG + rgb2.pG,
+                         rgb1.pB + rgb2.pB};
+}
+
+perceptualRGB operator+=(perceptualRGB rgb1, perceptualRGB rgb2) {
+    rgb1.pR += rgb2.pR;
+    rgb1.pG += rgb2.pG;
+    rgb1.pB += rgb2.pB;
+    return rgb1;
+}
+
 
 }
 /*
